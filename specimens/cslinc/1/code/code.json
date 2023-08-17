@@ -1,0 +1,1 @@
+{"kind":"flat","text":"import pytch\n\n\nclass Snake(pytch.Sprite):\n    Costumes = [\"Snake.png\"]\n\n    @pytch.when_this_sprite_clicked\n    def speak(self):\n        self.say_for_seconds(\"Hello there!\", 2.0)\n        self.say_for_seconds(\"OK bye!\", 2.0)"}
