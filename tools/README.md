@@ -20,3 +20,12 @@ poetry run python ./make_bundle.py /tmp/specimens.tar
 
 Then `scp` that tarfile to the hosting server and untar under
 `lesson-specimens`.
+
+Alternatively, untar to a local temporary directory and then, within
+that directory, use `rsync`:
+
+```
+rsync --del -vrlt -n . $USER@$HOST:$PATH
+```
+
+and then if all looks OK, repeat without the `-n` (dry-run) option.
