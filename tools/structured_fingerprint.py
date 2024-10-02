@@ -19,3 +19,13 @@ def of_event_handler(handler):
     event_print = of_event_descriptor(handler["event"])
     code_hash = sha256hex(handler["pythonCode"])
     return f"{event_print}:{code_hash}"
+
+
+def of_actor(actor):
+    handlers_prints = ",".join(
+        of_event_handler(h) for h in actor["handlers"]
+    )
+    kind = actor["kind"]
+    name = actor["name"]
+    hash_input = f"{kind}:{name}[{handlers_prints}]"
+    return sha256hex(hash_input)
