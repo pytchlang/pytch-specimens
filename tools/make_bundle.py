@@ -41,7 +41,7 @@ def add_specimen(bundle_tar, root_dir, specimen_relative_path):
 
     specimen_zip_io = io.BytesIO()
     with zipfile.ZipFile(specimen_zip_io, "w") as zip:
-        for entry_path in walked_relative_paths(specimen_path):
+        for entry_path in project_filenames_list(specimen_path):
             zip.write(specimen_path / entry_path, arcname=entry_path)
     specimen_zip_io.seek(0)
 
