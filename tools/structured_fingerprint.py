@@ -13,3 +13,9 @@ def of_event_descriptor(descr):
             suffix = sha256hex(descr["message"])
             return f"{kind}:{suffix}"
     raise RuntimeError(f"unknown kind {kind}")
+
+
+def of_event_handler(handler):
+    event_print = of_event_descriptor(handler["event"])
+    code_hash = sha256hex(handler["pythonCode"])
+    return f"{event_print}:{code_hash}"
