@@ -29,3 +29,9 @@ def of_actor(actor):
     name = actor["name"]
     hash_input = f"{kind}:{name}[{handlers_prints}]"
     return sha256hex(hash_input)
+
+
+def of_program(program):
+    actors_prints = [of_actor(a) for a in program["actors"]]
+    hash_input = ",".join(actors_prints)
+    return sha256hex(hash_input)
