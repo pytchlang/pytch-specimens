@@ -42,6 +42,7 @@ def program_fingerprint(program):
 def project_fingerprint(root_dir):
     with (root_dir / "code" / "code.json").open("rb") as f_in:
         code_obj = json.load(f_in)
+        program_kind = code_obj["kind"]
         program_fingerprint_line = program_fingerprint(code_obj)
 
     with (root_dir / "assets" / "metadata.json").open("rb") as f_in:
@@ -68,11 +69,10 @@ def project_fingerprint(root_dir):
             for asset_record in asset_records
         ]
 
-    asset_fingerprints = sorted(
-        [
-            asset_fingerprint(asset)
-            for asset in (root_dir / "assets" / "files").iterdir()
-        ]
+    asset_fingerprints = (
+        sorted(raw_asset_fingerprints)
+        if program_kind == "flat"
+        else raw_asset_fingerprints
     )
     assets_fingerprint = f"assets={','.join(asset_fingerprints)}"
 
