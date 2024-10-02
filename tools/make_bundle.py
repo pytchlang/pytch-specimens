@@ -27,14 +27,6 @@ def project_filenames_list(dir):
     return fixed_files + asset_files
 
 
-def walked_relative_paths(dir):
-    return [
-        fpath.relative_to(dir)
-        for fpath in dir.rglob("*")
-        if not fpath.is_dir()
-    ]
-
-
 def add_specimen(bundle_tar, root_dir, specimen_relative_path):
     specimen_path = root_dir / specimen_relative_path
     specimen_zip_path = f"{specimen_relative_path}.zip"
