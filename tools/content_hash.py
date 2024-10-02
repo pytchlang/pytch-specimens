@@ -51,11 +51,12 @@ def project_fingerprint(root_dir):
             for record in asset_fingerprint_records
         }
 
-    def asset_fingerprint(asset):
-        name_hash = sha256hex(asset.name)
-        mimetype_hash = sha256hex(mimetype(asset))
-        content_hash = sha256hex(asset.read_bytes())
-        transform_hash = sha256hex(transform_fingerprint_from_asset[asset.name])
+    def asset_fingerprint(asset_filename):
+        asset_file = root_dir / "assets" / "files" / asset_filename
+        name_hash = sha256hex(asset_filename)
+        mimetype_hash = sha256hex(mimetype(asset_filename))
+        content_hash = sha256hex(asset_file.read_bytes())
+        transform_hash = sha256hex(transform_fingerprint_from_asset[asset_filename])
         fingerprint = f"{name_hash}/{mimetype_hash}/{content_hash}/{transform_hash}"
         return fingerprint
 
