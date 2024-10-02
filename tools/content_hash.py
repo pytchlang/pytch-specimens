@@ -16,8 +16,10 @@ def mimetype(url):
 def asset_transform_fingerprints(asset_metadata_file):
     # This is horrible but we want to match JavaScript's
     # floating-point representation exactly.
+    this_dir = Path(__file__).resolve().parent
+    js_path = this_dir / "transform-fingerprints.js"
     result = subprocess.run(
-        ["node", "transform-fingerprints.js"],
+        ["node", js_path],
         stdin=asset_metadata_file,
         capture_output=True,
     )
