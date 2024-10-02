@@ -60,6 +60,14 @@ def project_fingerprint(root_dir):
         fingerprint = f"{name_hash}/{mimetype_hash}/{content_hash}/{transform_hash}"
         return fingerprint
 
+    # TODO: Avoid reading this file twice:
+    with (root_dir / "assets" / "metadata.json").open("rb") as f_in:
+        asset_records = json.load(f_in)
+        raw_asset_fingerprints = [
+            asset_fingerprint(asset_record["name"])
+            for asset_record in asset_records
+        ]
+
     asset_fingerprints = sorted(
         [
             asset_fingerprint(asset)
