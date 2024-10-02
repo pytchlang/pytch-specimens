@@ -1,11 +1,30 @@
 import click
 import io
+import json
 from pathlib import Path
 import shutil
 import tarfile
 import zipfile
 import time
 import content_hash
+
+
+def project_filenames_list(dir):
+    fixed_files = [
+        "version.json",
+        "meta.json",
+        "code/code.json",
+        "assets/metadata.json",
+    ]
+
+    with (dir / "assets" / "metadata.json").open("rb") as f_in:
+        asset_records = json.load(f_in)
+        asset_files = [
+            f"assets/files/{record['name']}"
+            for record in asset_records
+        ]
+
+    return fixed_files + asset_files
 
 
 def walked_relative_paths(dir):
