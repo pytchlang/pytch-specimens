@@ -1,3 +1,12 @@
+"""
+This mirrors the logic in the front end, files
+
+    pytch-webapp/src/model/junior/structured-program/event.ts
+    pytch-webapp/src/model/junior/structured-program/actor.ts
+    pytch-webapp/src/model/junior/structured-program/program.ts
+"""
+
+
 from specimen_utils import sha256hex
 
 
