@@ -16,8 +16,10 @@ def mimetype(url):
 def asset_transform_fingerprints(asset_metadata_file):
     # This is horrible but we want to match JavaScript's
     # floating-point representation exactly.
+    this_dir = Path(__file__).resolve().parent
+    js_path = this_dir / "transform-fingerprints.js"
     result = subprocess.run(
-        ["node", "transform-fingerprints.js"],
+        ["node", js_path],
         stdin=asset_metadata_file,
         capture_output=True,
     )
@@ -72,8 +74,15 @@ def project_content_hash(root_dir):
 @click.argument(
     "root_path", type=click.Path(exists=True, file_okay=False, dir_okay=True)
 )
-def main(root_path):
+@click.option(
+    "--with-filename/--no-filename",
+    default=False,
+    help="Print the ROOT_PATH before the content-hash."
+)
+def main(root_path, with_filename):
     """Print the content-hash of the project at the given ROOT_PATH."""
+    if with_filename:
+        print(root_path, end=" ")
     print(project_content_hash(Path(root_path)))
 
 
