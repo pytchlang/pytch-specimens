@@ -1,5 +1,6 @@
 import click
 import io
+import json
 from pathlib import Path
 import shutil
 import tarfile
@@ -8,12 +9,22 @@ import time
 import content_hash
 
 
-def walked_relative_paths(dir):
-    return [
-        fpath.relative_to(dir)
-        for fpath in dir.rglob("*")
-        if not fpath.is_dir()
+def project_filenames_list(dir):
+    fixed_files = [
+        "version.json",
+        "meta.json",
+        "code/code.json",
+        "assets/metadata.json",
     ]
+
+    with (dir / "assets" / "metadata.json").open("rb") as f_in:
+        asset_records = json.load(f_in)
+        asset_files = [
+            f"assets/files/{record['name']}"
+            for record in asset_records
+        ]
+
+    return fixed_files + asset_files
 
 
 def add_specimen(bundle_tar, root_dir, specimen_relative_path):
@@ -22,7 +33,7 @@ def add_specimen(bundle_tar, root_dir, specimen_relative_path):
 
     specimen_zip_io = io.BytesIO()
     with zipfile.ZipFile(specimen_zip_io, "w") as zip:
-        for entry_path in walked_relative_paths(specimen_path):
+        for entry_path in project_filenames_list(specimen_path):
             zip.write(specimen_path / entry_path, arcname=entry_path)
     specimen_zip_io.seek(0)
 
