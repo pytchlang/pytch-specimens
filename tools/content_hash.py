@@ -4,6 +4,7 @@ import mimetypes
 from pathlib import Path
 import subprocess
 from specimen_utils import sha256hex
+import structured_fingerprint
 
 
 def mimetype(url):
@@ -31,6 +32,9 @@ def program_fingerprint(program):
     if kind == "flat":
         hash = sha256hex(program["text"])
         return f"program=flat/{hash}"
+    elif kind == "per-method":
+        inner = structured_fingerprint.of_program(program["program"])
+        return f"program=per-method/{inner}"
     else:
         raise RuntimeError(f'unknown program-kind "{kind}"')
 
