@@ -74,8 +74,15 @@ def project_content_hash(root_dir):
 @click.argument(
     "root_path", type=click.Path(exists=True, file_okay=False, dir_okay=True)
 )
-def main(root_path):
+@click.option(
+    "--with-filename/--no-filename",
+    default=False,
+    help="Print the ROOT_PATH before the content-hash."
+)
+def main(root_path, with_filename):
     """Print the content-hash of the project at the given ROOT_PATH."""
+    if with_filename:
+        print(root_path, end=" ")
     print(project_content_hash(Path(root_path)))
 
 
