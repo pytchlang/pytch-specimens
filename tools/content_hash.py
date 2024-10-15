@@ -42,6 +42,7 @@ def program_fingerprint(program):
 def project_fingerprint(root_dir):
     with (root_dir / "code" / "code.json").open("rb") as f_in:
         code_obj = json.load(f_in)
+        program_kind = code_obj["kind"]
         program_fingerprint_line = program_fingerprint(code_obj)
 
     with (root_dir / "assets" / "metadata.json").open("rb") as f_in:
@@ -51,19 +52,27 @@ def project_fingerprint(root_dir):
             for record in asset_fingerprint_records
         }
 
-    def asset_fingerprint(asset):
-        name_hash = sha256hex(asset.name)
-        mimetype_hash = sha256hex(mimetype(asset))
-        content_hash = sha256hex(asset.read_bytes())
-        transform_hash = sha256hex(transform_fingerprint_from_asset[asset.name])
+    def asset_fingerprint(asset_filename):
+        asset_file = root_dir / "assets" / "files" / asset_filename
+        name_hash = sha256hex(asset_filename)
+        mimetype_hash = sha256hex(mimetype(asset_filename))
+        content_hash = sha256hex(asset_file.read_bytes())
+        transform_hash = sha256hex(transform_fingerprint_from_asset[asset_filename])
         fingerprint = f"{name_hash}/{mimetype_hash}/{content_hash}/{transform_hash}"
         return fingerprint
 
-    asset_fingerprints = sorted(
-        [
-            asset_fingerprint(asset)
-            for asset in (root_dir / "assets" / "files").iterdir()
+    # TODO: Avoid reading this file twice:
+    with (root_dir / "assets" / "metadata.json").open("rb") as f_in:
+        asset_records = json.load(f_in)
+        raw_asset_fingerprints = [
+            asset_fingerprint(asset_record["name"])
+            for asset_record in asset_records
         ]
+
+    asset_fingerprints = (
+        sorted(raw_asset_fingerprints)
+        if program_kind == "flat"
+        else raw_asset_fingerprints
     )
     assets_fingerprint = f"assets={','.join(asset_fingerprints)}"
 
