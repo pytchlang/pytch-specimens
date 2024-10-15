@@ -1,10 +1,9 @@
 import click
-import hashlib
 import json
 import mimetypes
 from pathlib import Path
 import subprocess
-import unicodedata
+from specimen_utils import sha256hex
 
 
 def mimetype(url):
@@ -23,15 +22,6 @@ def asset_transform_fingerprints(asset_metadata_file):
         capture_output=True,
     )
     return json.loads(result.stdout)
-
-
-def sha256hex(data_or_string):
-    data = (
-        unicodedata.normalize("NFC", data_or_string).encode("utf-8")
-        if isinstance(data_or_string, str)
-        else data_or_string
-    )
-    return hashlib.sha256(data).hexdigest()
 
 
 def program_fingerprint(program):
