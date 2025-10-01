@@ -41,15 +41,15 @@ def add_specimen(bundle_tar, root_dir, specimen_relative_path):
     hash = content_hash.project_content_hash(specimen_path)
     by_content_path = f"_by_content_hash_/{hash}.zip"
 
-    zip_tarinfo = tarfile.TarInfo(specimen_zip_path)
+    zip_tarinfo = tarfile.TarInfo(by_content_path)
     zip_tarinfo.size = len(specimen_zip_buf)
     zip_tarinfo.mode = 0o444
     zip_tarinfo.mtime = time.time()
     bundle_tar.addfile(zip_tarinfo, specimen_zip_io)
 
-    link_tarinfo = tarfile.TarInfo(by_content_path)
+    link_tarinfo = tarfile.TarInfo(specimen_zip_path)
     link_tarinfo.type = tarfile.SYMTYPE
-    link_tarinfo.linkname = f"../{specimen_zip_path}"
+    link_tarinfo.linkname = f"../{by_content_path}"
     link_tarinfo.mode = 0o444
     bundle_tar.addfile(link_tarinfo)
 
