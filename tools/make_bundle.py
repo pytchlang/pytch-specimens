@@ -36,20 +36,23 @@ def add_specimen(bundle_tar, root_dir, specimen_relative_path):
         for entry_path in project_filenames_list(specimen_path):
             zip.write(specimen_path / entry_path, arcname=entry_path)
     specimen_zip_io.seek(0)
-
     specimen_zip_buf = specimen_zip_io.getbuffer()
-    zip_tarinfo = tarfile.TarInfo(specimen_zip_path)
-    zip_tarinfo.size = len(specimen_zip_buf)
-    zip_tarinfo.mode = 0o444
-    zip_tarinfo.mtime = time.time()
-
-    bundle_tar.addfile(zip_tarinfo, specimen_zip_io)
 
     hash = content_hash.project_content_hash(specimen_path)
-    link_tarinfo = tarfile.TarInfo(f"_by_content_hash_/{hash}.zip")
+    by_content_path = f"_by_content_hash_/{hash}.zip"
+    bundle_creation_time = time.time()
+
+    zip_tarinfo = tarfile.TarInfo(by_content_path)
+    zip_tarinfo.size = len(specimen_zip_buf)
+    zip_tarinfo.mode = 0o444
+    zip_tarinfo.mtime = bundle_creation_time
+    bundle_tar.addfile(zip_tarinfo, specimen_zip_io)
+
+    link_tarinfo = tarfile.TarInfo(specimen_zip_path)
     link_tarinfo.type = tarfile.SYMTYPE
-    link_tarinfo.linkname = f"../{specimen_zip_path}"
+    link_tarinfo.linkname = f"../{by_content_path}"
     link_tarinfo.mode = 0o444
+    link_tarinfo.mtime = bundle_creation_time
     bundle_tar.addfile(link_tarinfo)
 
 
